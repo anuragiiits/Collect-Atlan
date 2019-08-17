@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Atlan Assignment</title>
+</head>
+
+<body>
+    <h3>Examples</h3>
+    
+    <form action="/example1/" method="post" id="form1" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="panel panel-primary">
+            <input type="file" name="csv_data" id="id_csv_data" auaccept=".csv" tocomplete="off">
+            <button type="submit" form="form1" value="Submit" class="btn btn-dark">Submit</button>
+        </div>        
+    </form>
+    <br>
+    {% comment %} <a href="{% url 'export_details' %}"><button type="button" class="btn btn-dark">Export</button></a>
+    <a href="{% url 'clear' %}"><button type="button" class="btn btn-dark">Clear DB</button></a> {% endcomment %}
+</body>
+
+</html>
