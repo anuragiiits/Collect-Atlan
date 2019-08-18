@@ -4,13 +4,18 @@ from django.views import View
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+from tqdm import tqdm
 
 from .tasks import upload_csv
 from .models import CSVData, Task
 
+import os
 import csv
 import json
 import codecs
+import time
 
 from celery.task.control import revoke
 from celery.result import AsyncResult
@@ -30,7 +35,7 @@ class StopTaskView(View):
         print(state)
         if(state == "PENDING" or state == "STARTED" or state == "RETRY"):
             revoke(task_id, terminate=True)
-            CSVData.objects.filter(task_id=task_id).delete()
+            CSVData.objects.filter(task__task_id=task_id).delete()
             return render(self.request, "cancel_task.html", context = {"task_id": task_id, "msg": "The Task is Cancelled"})
         else:
             return render(self.request, "cancel_task.html", context = {"task_id": task_id, "msg": "The Task has Already Finished/Stopped"})
@@ -43,21 +48,21 @@ class Example1View(View):
 
     def post(self, request):
 
-        file_ptr = request.FILES['csv_data'] 
+        csv_file = request.FILES['csv_data'] 
 
-        if file_ptr is None:
-            return HttpResponseRedirect(reverse('ExampleTasks:home', kwargs={'error': "Upload given CSV file only"}))
+        if csv_file is None:
+            return render(request, "home.html", context = {'error': "Upload given CSV file only"})
+            # return HttpResponseRedirect(reverse('Atlan:home', kwargs={'error': "Upload given CSV file only"}))
         
-        # files = self.request.FILES['datafile']   
-        with open(str(file_ptr),"r",) as fl:
-            print("Fl = ", fl, codecs.iterdecode(file_ptr, 'utf-8'))
-            # filereader = csv.reader(codecs.iterdecode(file_ptr, 'utf-8'))
-            row_count = sum(1 for row in fl )
-            print("Yes")
-            task_id = upload_csv.delay("filereader", row_count)
-            task = Task(str(task_id), "Upload CSV File")
-            task.save()
+        if not csv_file.name.endswith('.csv'):
+            return render(request, "home.html", context = {'error': "Upload given CSV file only"})
+            # return HttpResponseRedirect(reverse('Atlan:home', kwargs={'error': "Upload given CSV file only"}))
+        
+        fs = FileSystemStorage()
+        filename = fs.save(csv_file.name, csv_file)
+        uploaded_file_url = fs.url(filename)
 
-            return render(request, "cancel_task.html", context = {"task_id": task_id, "msg":""})
-        
-        return HttpResponseRedirect(reverse('ExampleTasks:home', kwargs={'error': "Upload given CSV file only"}))
+        task_id = upload_csv.delay(uploaded_file_url)
+        Task.objects.get_or_create(task_id = task_id, defaults = {"task_type": "Upload CSV File", "file_url": uploaded_file_url})
+
+        return render(request, "cancel_task.html", context = {"task_id": task_id, "msg":""})
