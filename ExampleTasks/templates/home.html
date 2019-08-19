@@ -7,7 +7,7 @@
 </head>
 
 <body>
-    <h3>Examples</h3>
+    <h3>Example 1 and 3</h3>
     
     <form action="/example1/" method="post" id="form1" enctype="multipart/form-data">
         {% csrf_token %}
@@ -18,8 +18,10 @@
         </div>        
     </form>
     <br>
-    {% comment %} <a href="{% url 'export_details' %}"><button type="button" class="btn btn-dark">Export</button></a>
-    <a href="{% url 'clear' %}"><button type="button" class="btn btn-dark">Clear DB</button></a> {% endcomment %}
+
+    <h3>Example 2</h3>
+    <a href="{% url 'Atlan:example2' %}"><button type="button" class="btn btn-dark">Export as CSV</button></a>
+    The export of data will start assuming some random filter. The focus of this example is to give the ability to stop the exporting process in between.
 </body>
 
 </html>

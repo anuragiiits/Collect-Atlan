@@ -17,7 +17,6 @@ def upload_csv(uploaded_file_url):
     file_path = os.path.join(settings.BASE_DIR, str(file_url))
     
     with open(file_path,"r",) as fl:
-        # file_reader = csv.reader(codecs.iterdecode(fl, 'utf-8'))
         file_reader = csv.reader(fl)
         row_count = sum(1 for row in fl )
         fl.seek(0)
@@ -29,8 +28,6 @@ def upload_csv(uploaded_file_url):
         print(created, file_reader, fl)
         iterator = tqdm(file_reader,total=row_count)
         for row in iterator:
-            # time.sleep(1)
-            # print(row)
             csv_data.append(row[0])
             count += 1
             if(count%100 is 0):
@@ -42,3 +39,19 @@ def upload_csv(uploaded_file_url):
         objs = [CSVData(task=task, data=item) for item in csv_data]    #To insert the remaining data
         if len(objs) > 0:  
             CSVData.objects.bulk_create(objs)
+
+
+@shared_task
+def generate_file():
+    filename = "%s.csv" % generate_file.request.id
+    csv_data = CSVData.objects.all()
+
+    file_path = os.path.join(settings.MEDIA_ROOT, str(filename))
+
+    with open(file_path, "w+") as fl:
+        writer = csv.writer(fl, dialect=csv.excel)
+        iterator = tqdm(csv_data, total=len(csv_data))
+        for i in iterator:
+            writer.writerow([i.id, i.task.task_id, i.data])
+
+    return filename

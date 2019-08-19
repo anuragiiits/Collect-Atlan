@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+<body>
+<h3>Example 2</h3>
+<h3 id="content">Please wait. <span id="loading"></span></h3>
+<h4> You can check the progress bar of downloading process in the Celery Worker's Terminal</h4>
+<br>
+<h2>Task Id: {{task_id}} </h2>
+<a href="{% url 'Atlan:stop' task_id %}"><button type="button" class="btn btn-dark">Stop Upload</button></a>
+<h4> {{msg}} </h4>
+{% load static %}
+<script type="text/javascript" src="{% static "ExampleTasks/js/jquery.min.js" %}"></script>
+<script>
+    $(function(){
+        $.ajaxSetup({ cache: false, timeout: 360000 });
+        var url = "/poll_for_download";
+        var i = 0;
+        (function worker() {
+            $.getJSON("{% url 'Atlan:example2util' task_id %}", function(data){
+                if(data.filename) {
+                    var file_url = "{% url 'Atlan:example2util' task_id %}"+"?filename="+data.filename;
+                    $("#content").html("If your download doesn't start automatically, please click <a href='"+file_url+"'>here</a>.");
+                    window.location.href = file_url;
+                } else {
+                    setTimeout(worker, 5000);
+                }
+            });
+        })();
+        setInterval(function() {
+            i = ++i % 4;
+            $("#loading").html("loading"+Array(i+1).join("."));
+        }, 1000);
+    });
+</script>
+</body>
+</html>
