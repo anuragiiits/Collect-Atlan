@@ -10,7 +10,7 @@
         <h4> You can check the progress bar of downloading process in the Celery Worker's Terminal</h4>
         <br>
         <h2>Task Id: {{task_id}} </h2>
-        <a href="{% url 'Atlan:stop' task_id %}"><button type="button" class="btn btn-dark">Stop Upload</button></a>
+        <a href="{% url 'Atlan:stop' task_id %}"><button type="button" class="btn btn-dark">Stop Exporting</button></a>
         <h4> {{msg}} </h4>
         {% load static %}
         <script type="text/javascript" src="{% static "ExampleTasks/js/jquery.min.js" %}"></script>

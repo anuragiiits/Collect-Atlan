@@ -7,10 +7,6 @@ services:
   web:
     build: .
     restart: always
-    environment:
-      DEBUG: 1
-      ALLOWED_HOSTS: "*"
-      SECRET_KEY: "secretkey1"
     ports:
       - "8080:8080"
     depends_on:
