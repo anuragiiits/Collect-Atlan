@@ -49,13 +49,13 @@ class StopTaskView(View):
             return render(self.request, "cancel_task.html", context = {"task_id": task_id, "msg": "The Task has Already Finished/Stopped"})
 
 
-class Example1And2View(View):
+class Example1And3View(View):
     '''
-        The view with implementation of Example 1 and 2 problem
+        The view with implementation of Example 1 and 3 problem
     '''
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
-        return super(Example1And2View, self).dispatch(request, *args, **kwargs)
+        return super(Example1And3View, self).dispatch(request, *args, **kwargs)
 
     '''
         Accepts POST request with File in it
@@ -85,7 +85,7 @@ class Example1And2View(View):
 
 class Example2View(View):
     '''
-        The view with implementation of Example 1 and 2 problem
+        The view with implementation of Example 2 problem
     '''
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):

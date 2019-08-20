@@ -19,6 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
+# Uncomment Below 3 variables to run the project locally
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'c0xjq^+wistr$nzo_u7)yi@ot0z16n$w-dd(ny_hu4n(7_cc38'
 
@@ -27,6 +28,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ALLOWED_HOSTS = ['*']
 
+# Comment the next 3 lines to run the project locally
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = bool(int(os.getenv('DEBUG', False)))
