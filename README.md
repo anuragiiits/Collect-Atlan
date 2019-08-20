@@ -1,6 +1,6 @@
 # Collect-Atlan
 
-GitHub Repository Link : git@github.com:anuragiiits/Collect-Atlan.git
+GitHub Repository Link : https://github.com/anuragiiits/Collect-Atlan.git
 
 ## Introduction 
 
