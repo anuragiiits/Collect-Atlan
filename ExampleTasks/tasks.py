@@ -15,7 +15,7 @@ def upload_csv(uploaded_file_url):
     if(uploaded_file_url[0] == '/' or uploaded_file_url[0] == '\\'):
         file_url = uploaded_file_url[1:]
     file_path = os.path.join(settings.BASE_DIR, str(file_url))
-    
+    print(settings.BASE_DIR, uploaded_file_url, file_path, settings.MEDIA_ROOT)
     with open(file_path,"r",) as fl:
         file_reader = csv.reader(fl)
         row_count = sum(1 for row in fl )
