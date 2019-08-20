@@ -7,20 +7,18 @@ services:
   web:
     build: .
     restart: always
-    command: bash -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"
-    container_name: Atlan
     environment:
-      - ENVIRONMENT=production
-    volumes:
-      - .:/Atlan
+      DEBUG: 1
+      ALLOWED_HOSTS: "*"
+      SECRET_KEY: "secretkey1"
+    command: bash -c "python manage.py collectstatic --noinput && python manage.py migrate --noinput && gunicorn --bind 0.0.0.0:8080 Collect.wsgi"
+    container_name: Atlan
     ports:
-      - "8000:8000"
+      - "8080:8080"
     depends_on:
       - redis
   celery:
     build: .
     command: celery -A Collect worker -l info
-    volumes:
-      - .:/Atlan
     depends_on:
       - redis
