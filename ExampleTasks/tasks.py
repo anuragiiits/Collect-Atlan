@@ -1,13 +1,14 @@
-from celery import shared_task
-from .models import CSVData, Task
-from tqdm import tqdm
 from django.conf import settings
+
+from faker import Faker
+from tqdm import tqdm
+from celery import shared_task
+
+from .models import CSVData, Task
 
 import os
 import csv
-import json
-import codecs
-import time
+import datetime
 
 @shared_task
 def upload_csv(uploaded_file_url):
@@ -15,10 +16,14 @@ def upload_csv(uploaded_file_url):
     if(uploaded_file_url[0] == '/' or uploaded_file_url[0] == '\\'):
         file_url = uploaded_file_url[1:]
     file_path = os.path.join(settings.BASE_DIR, str(file_url))
-    print(settings.BASE_DIR, uploaded_file_url, file_path, settings.MEDIA_ROOT)
+    
+    fake = Faker()
+    start_date = datetime.date(year=2000, month=1, day=1)
+    end_date = datetime.date(year=2020, month=12, day=31)
+
     with open(file_path,"r",) as fl:
         file_reader = csv.reader(fl)
-        row_count = sum(1 for row in fl )
+        row_count = sum(1 for row in fl)
         fl.seek(0)
         print(row_count)
         csv_data = []
@@ -31,20 +36,23 @@ def upload_csv(uploaded_file_url):
             csv_data.append(row[0])
             count += 1
             if(count%100 is 0):
-                objs = [CSVData(task=task, data=item) for item in csv_data]
+                objs = [CSVData(task=task, data=item, date=fake.date_between(start_date=start_date, end_date=end_date)) for item in csv_data]
                 CSVData.objects.bulk_create(objs)
                 csv_data = []
                 count = 0
     
-        objs = [CSVData(task=task, data=item) for item in csv_data]    #To insert the remaining data
+        objs = [CSVData(task=task, data=item, date=fake.date_between(start_date=start_date, end_date=end_date)) for item in csv_data]    #To insert the remaining data
         if len(objs) > 0:  
             CSVData.objects.bulk_create(objs)
 
 
 @shared_task
-def generate_file():
+def generate_file(start_date, end_date):
     filename = "%s.csv" % generate_file.request.id
-    csv_data = CSVData.objects.all()
+
+    start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+    end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+    csv_data = CSVData.objects.filter(date__gte=start_date, date__lte=end_date)
 
     file_path = os.path.join(settings.MEDIA_ROOT, str(filename))
 
@@ -52,6 +60,6 @@ def generate_file():
         writer = csv.writer(fl, dialect=csv.excel)
         iterator = tqdm(csv_data, total=len(csv_data))
         for i in iterator:
-            writer.writerow([i.id, i.task.task_id, i.data])
+            writer.writerow([i.id, i.task.task_id, i.data, i.date])
 
     return filename

@@ -1,27 +1,34 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 
-<head>
-    <meta charset="utf-8">
-    <title>Atlan Assignment</title>
-</head>
+    <head>
+        <meta charset="utf-8">
+        <title>Atlan Assignment</title>
+    </head>
 
-<body>
-    <h3>Example 1 and 3</h3>
-    
-    <form action="/example1/" method="post" id="form1" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="panel panel-primary">
-            <input type="file" name="csv_data" id="id_csv_data" auaccept=".csv" tocomplete="off">
-            <button type="submit" form="form1" value="Submit" class="btn btn-dark">Submit</button>
-            {{error}}
-        </div>        
-    </form>
-    <br>
+    <body>
+        <h3>Example 1 and 3</h3>
+        
+        <form action="/example1/" method="post" id="form1" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="panel panel-primary">
+                <input type="file" name="csv_data" id="id_csv_data" auaccept=".csv" tocomplete="off">
+                <button type="submit" form="form1" value="Submit" class="btn btn-dark">Submit</button>
+                {{error}}
+            </div>        
+        </form>
+        <br>
 
-    <h3>Example 2</h3>
-    <a href="{% url 'Atlan:example2' %}"><button type="button" class="btn btn-dark">Export as CSV</button></a>
-    The export of data will start assuming some random filter. The focus of this example is to give the ability to stop the exporting process in between.
-</body>
+        <h3>Example 2</h3>
+        <p>Enter Start Date and End Date within Range (YYYY-MM-DD) 2000-01-01 to 2020-12-31</p> 
+        <form action="/example2/" method="post" id="form2" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="panel panel-primary">
+                <input type="text" name="start_date" value="2000-01-01" id="id_start_date">
+                <input type="text" name="end_date" value="2020-12-31" id="id_end_date">
+                <button type="submit" form="form2" value="Export as CSV" class="btn btn-dark">Submit</button>
+            </div>        
+        </form>
+    </body>
 
 </html>

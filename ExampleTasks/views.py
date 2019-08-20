@@ -15,8 +15,7 @@ from .models import CSVData, Task
 import os
 import csv
 import json
-import codecs
-import time
+import datetime
 
 from celery.task.control import revoke
 from celery.result import AsyncResult
@@ -72,9 +71,17 @@ class Example2View(View):
     def dispatch(self, request, *args, **kwargs):
         return super(Example2View, self).dispatch(request, *args, **kwargs)
 
-    def get(self, request):
+    def post(self, request):
 
-        task_id = generate_file.delay()
+        start_date = request.POST.get("start_date")
+        end_date = request.POST.get("end_date")
+        try:
+            datetime.datetime.strptime(start_date, '%Y-%m-%d')
+            datetime.datetime.strptime(end_date, '%Y-%m-%d')
+        except ValueError:
+            return render(request, "home.html", context = {'error_2': "Invalid Date or Wrong Format, Please follow: YYYY-MM-DD"})
+
+        task_id = generate_file.delay(start_date, end_date)
         download_file_url = os.path.join(settings.MEDIA_ROOT, "{}.csv".format(task_id))
         Task.objects.create(task_id = task_id, task_type = "Download CSV File", file_url= download_file_url)
         return render(request, "poll_for_download_and_cancel.html", context = {"task_id": task_id, "msg":""})
