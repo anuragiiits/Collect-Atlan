@@ -1,6 +1,6 @@
 # Collect-Atlan
 
-GitHub Repository Link : https://github.com/khatryshikha/SocialCops-Django
+GitHub Repository Link : git@github.com:anuragiiits/Collect-Atlan.git
 
 ## Introduction 
 
@@ -36,8 +36,8 @@ Make sure you have [Docker](https://docs.docker.com/installation/) and [docker-c
   5. Install the requirements for the Project
   `pip install -r requirements.txt`
   6. Open `Collect/settings.py`  
-    * Uncomment the commented SECRET_KEY, DEBUG and ALLOWED_HOSTS values and Comment the existing values which is set for Production Environment
-    * Change the REDIS_BROKER_URL and REDIS_BACKEND_URL from `redis://redis:6379` to `redis://localhost:6379`
+      * Uncomment the commented SECRET_KEY, DEBUG and ALLOWED_HOSTS values and Comment the existing values which is set for Production Environment
+      * Change the REDIS_BROKER_URL and REDIS_BACKEND_URL from `redis://redis:6379` to `redis://localhost:6379`
   7. Run the migrations
   `python manage.py makemigrations` and
   `python manage.py migrate`
