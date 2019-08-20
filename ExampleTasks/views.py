@@ -89,7 +89,7 @@ class Example2Util(View):
         filename = request.GET.get("filename")
         if request.is_ajax():
             result = generate_file.AsyncResult(task_id)
-            if result.ready():
+            if result.state == "SUCCESS":
                 return HttpResponse(json.dumps({"filename": result.get()}))
             return HttpResponse(json.dumps({"filename": None}))
 
