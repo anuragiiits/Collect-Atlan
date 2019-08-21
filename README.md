@@ -1,7 +1,6 @@
 # Collect-Atlan
 
-GitHub Repository Link : https://github.com/anuragiiits/Collect-Atlan.git
-
+GitHub Repository Link : https://github.com/anuragiiits/Collect-Atlan
 ## Introduction 
 
 Atlan Internship Challenge - Backend
